@@ -1,0 +1,10 @@
+#!/bin/bash
+
+set -e
+
+rspec -r 'spec/spec_helper' spec
+
+for file in `find spec -iname '*_spec.rb'; do
+  echo "rspec -r 'spec/spec_helper' $file"
+  rspec $file
+end
