@@ -1,3 +1,0 @@
-require 'spec/support/touch_file'
-
-run TouchFile.new
