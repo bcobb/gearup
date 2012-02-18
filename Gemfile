@@ -1,7 +1,7 @@
 source :rubygems
 
-gem 'gearman-ruby', '~> 3.0.4'
-
-group :test do
+group :development do
   gem 'rspec', '~> 2.8'
 end
+
+gemspec

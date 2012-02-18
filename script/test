@@ -2,9 +2,12 @@
 
 set -e
 
-rspec -r 'spec/spec_helper' spec
+echo "Running Suite"
 
-for file in `find spec -iname '*_spec.rb'; do
-  echo "rspec -r 'spec/spec_helper' $file"
+rspec spec
+
+echo "Running individual specs"
+
+for file in `find spec -iname '*_spec.rb'`; do
   rspec $file
-end
+done
