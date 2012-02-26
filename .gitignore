@@ -1,3 +1,4 @@
 ref
+.rvmrc
 *.gem
 Gemfile.lock
