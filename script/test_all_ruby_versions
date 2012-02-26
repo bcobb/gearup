@@ -1,0 +1,5 @@
+#!/bin/bash
+
+set -e
+
+rvm ree-2010.02@gearup,1.9.2@gearup,1.9.3@gearup exec script/test

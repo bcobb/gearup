@@ -1,13 +1,9 @@
 #!/bin/bash
 
-set -e
+if [ $# -ne 0 ]; then
+  command="rspec -f doc $1"
 
-echo "Running Suite"
-
-rspec spec
-
-echo "Running individual specs"
-
-for file in `find spec -iname '*_spec.rb'`; do
-  rspec $file
-done
+  $command
+else
+  rspec spec
+fi
