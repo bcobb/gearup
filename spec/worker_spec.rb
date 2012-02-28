@@ -11,4 +11,11 @@ describe Gearup::Worker do
     subject.work(payload)
   end
 
+  it 'forwards calls to its ability' do
+    env, ability = stub, stub(:call => 'forwarded')
+    subject.enable ability
+
+    subject.call(env).should == 'forwarded'
+  end
+
 end
