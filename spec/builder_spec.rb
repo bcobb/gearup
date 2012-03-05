@@ -10,10 +10,10 @@ describe Gearup::Builder do
         @ability = ability
       end
 
-      def call(env)
-        env.data = "[#{env.data}]"
+      def call(payload)
+        payload.data = "[#{payload.data}]"
 
-        @ability.call(env)
+        @ability.call(payload)
       end
 
     end
@@ -43,10 +43,10 @@ describe Gearup::Builder do
         @logger = logger
       end
 
-      def call(env)
-        @logger.debug "Input: #{env.data}"
+      def call(payload)
+        @logger.debug "Input: #{payload.data}"
 
-        result = @ability.call(env)
+        result = @ability.call(payload)
 
         @logger.debug "Output: #{result}"
 
@@ -57,15 +57,15 @@ describe Gearup::Builder do
 
     class ParensAbility
 
-      def call(env)
-        "(#{env.data})"
+      def call(payload)
+        "(#{payload.data})"
       end
 
     end
   end
 
   let(:logger) { Test::Logger }
-  let(:env) { OpenStruct.new(:data => 'data') }
+  let(:payload) { OpenStruct.new(:data => 'data') }
 
   after { logger.flush }
 
@@ -79,11 +79,11 @@ describe Gearup::Builder do
   end
 
   it 'wraps data in brackets, then parenthesis' do
-    subject.call(env).should == '([data])'
+    subject.work(payload).should == '([data])'
   end
 
   it 'logs input and output in its middleware' do
-    subject.call(env)
+    subject.work(payload)
 
     logger.debug.should == ['Input: data', 'Output: ([data])']
   end

@@ -1,7 +1,7 @@
 module Gearup
   class Worker
 
-    SimpleAbility = lambda { |env| }
+    SimpleAbility = lambda { |payload| }
 
     attr_reader :ability
 
@@ -13,8 +13,8 @@ module Gearup
       @ability = ability
     end
 
-    def call(env)
-      @ability.call(env)
+    def work(payload)
+      @ability.call(payload)
     end
 
   end

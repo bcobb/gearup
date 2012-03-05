@@ -2,11 +2,13 @@ require 'gearup'
 
 describe Gearup::Worker do
 
-  it 'enables abilities' do
-    ability = stub
+  it 'uses abilities to do work' do
+    ability, payload = stub, stub
     subject.enable ability
 
-    subject.ability.should == ability
+    ability.should_receive(:call).with(payload)
+
+    subject.work(payload)
   end
 
 end
