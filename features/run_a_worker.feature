@@ -20,5 +20,4 @@ Feature: Run a worker
       """
     When I run the test.echo task with "hello"
     And I successfully run `gearup worker.rb`
-    Then the exit status should be 0
-    And the task should complete with "hello"
+    Then the task should complete with "hello"
