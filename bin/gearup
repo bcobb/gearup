@@ -1,4 +1,8 @@
 #! /usr/bin/env ruby
 
 require 'gearup'
-Gearup::Executor.execute(ARGV)
+
+args = ARGV.dup
+worker = ::File.expand_path(args.pop)
+
+Gearup.run_from_file(worker)

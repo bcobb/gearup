@@ -1,7 +1,6 @@
 Feature: Run a worker
 
-  Gearup supplies a binary, `gearup`, so that running workers in a configurable
-  way is relatively painless.
+  Gearup supplies a binary, `gearup`, that starts workers.
 
   Scenario: run `gearup` with a specified worker file
     Given a file named "worker.rb" with:

@@ -8,6 +8,14 @@ module Gearup
       builder.instance_exec(&specification)
     end
 
+    def self.build_from_file(file_name)
+      file = ::File.expand_path(file_name)
+      contents = ::File.read(file)
+      command = "Gearup::Builder.build {\n#{contents}}"
+
+      eval command, TOPLEVEL_BINDING, file
+    end
+
     def initialize
       @worker = Worker.new
       @middleware = []
