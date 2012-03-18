@@ -8,7 +8,7 @@ describe Gearup::Worker do
 
     ability.should_receive(:call).with(payload)
 
-    subject.work(payload)
+    subject.call(payload)
   end
 
   it 'forwards calls to its ability' do

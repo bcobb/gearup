@@ -13,7 +13,7 @@ module Gearup
       @ability = ability
     end
 
-    def work(payload)
+    def call(payload)
       @ability.call(payload)
     end
 
