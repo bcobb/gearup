@@ -1,10 +1,10 @@
 require 'gearup'
 
-describe Gearup::Builder do
+describe Gearup::BuildsWorkers do
 
   it 'can build workers from files' do
     payload = stub(:data => 'reverse')
-    worker = Gearup::Builder.build_from_file('example/reverse.rb')
+    worker = Gearup::BuildsWorkers.build_from_file('example/reverse.rb')
 
     worker.call(payload).should == 'esrever'
   end
@@ -12,7 +12,7 @@ describe Gearup::Builder do
   it 'can build workers' do
     payload = stub(:data => 'echo me!')
 
-    worker = Gearup::Builder.build do
+    worker = Gearup::BuildsWorkers.build do
       enable lambda { |payload| payload.data }
     end
 
