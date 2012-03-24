@@ -5,18 +5,16 @@ Feature: Run a worker
   Scenario: run `gearup` with a specified worker file
     Given a file named "worker.rb" with:
       """
-      module Test
+      module Example
         class Echo
 
-          def work(payload)
+          def call(payload)
             return payload.data
           end
 
         end
       end
-
-      enable Test::Echo.new
       """
-    When I run the test.echo task with "hello"
-    And I successfully run `gearup worker.rb`
+    When I successfully run `gearup worker.rb`
+    And I run the example.echo task with "hello"
     Then the task should complete with "hello"

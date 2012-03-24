@@ -7,5 +7,3 @@ module Example
 
   end
 end
-
-enable Example::Reverse.new
