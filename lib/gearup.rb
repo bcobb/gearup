@@ -46,19 +46,17 @@ module Gearup
     at_exit { ::File.delete(pid_file) if ::File.exist?(pid_file) }
 
     trap(:INT) do
-      exit
-    end
-
-    trap("EXIT") do
       logger.debug "Gearup: Shutting down"
       worker.remove_ability('example.echo')
 
       worker.worker_enabled = false
+
+      exit
     end
 
     logger.debug "Daemonized"
 
-    loop { worker.work }
+    worker.work
   end
 
 end
