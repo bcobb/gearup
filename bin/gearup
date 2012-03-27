@@ -3,6 +3,8 @@
 require 'gearup'
 
 args = ARGV.dup
-worker = ::File.expand_path(args.pop)
 
-Gearup.run_from_file(worker)
+worker = ::File.expand_path(args.pop)
+configuration = Gearup::CommandLineConfiguration.from(args)
+
+Gearup.run_from_file(worker, configuration)

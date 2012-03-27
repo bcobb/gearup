@@ -15,6 +15,6 @@ Feature: Run a worker
         end
       end
       """
-    When I successfully run `gearup worker.rb`
+    When I successfully run `gearup -l ../../log/test.log -v worker.rb`
     And I run the example.echo task with "hello"
     Then the task should complete with "hello"

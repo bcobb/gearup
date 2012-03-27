@@ -3,10 +3,61 @@ require 'gearman'
 
 module Gearup
 
-  def self.run_from_file(file)
-    lib = File.dirname(__FILE__)
-    log = File.join(lib, '..', 'log', 'worker.log')
-    logger = Logger.new(log)
+  class CommandLineConfiguration
+
+    def self.from(args)
+      configuration = new(args)
+      configuration.parse_options!
+      configuration.options
+    end
+
+    def initialize(args)
+      @args = args
+      @options = { }
+    end
+
+    def parse_options!
+      parser.parse!(@args)
+    end
+
+    def options
+      {
+        :logfile => ::File.expand_path('log/gearup.log'),
+        :servers => ['localhost:4730']
+      }.merge(@options)
+    end
+
+    private
+
+    def parser
+      OptionParser.new do |parser|
+        parser.banner = "Usage: gearup [options] WORKER\n\n"
+
+        parser.on('-s', '--server SERVERS', Array, 'Specify servers on which the worker will run.') do |servers|
+          @options[:servers] = servers
+        end
+
+        parser.on('-v', '--verbose', 'Enable verbose (DEBUG-level) logging') do |verbose|
+          @options[:verbose] = true
+        end
+
+        parser.on('-l', '--logfile LOGFILE', "Specify Gearup's log location") do |logfile|
+          file = File.expand_path(logfile)
+          @options[:logfile] = file
+        end
+
+      end
+    end
+
+  end
+
+  def self.run_from_file(file, configuration)
+    logger = Logger.new(configuration[:logfile])
+    if configuration[:verbose]
+      logger.level = Logger::DEBUG
+    else
+      logger.level = Logger::INFO
+    end
 
     eval ::File.read(file), TOPLEVEL_BINDING, file
 
@@ -14,7 +65,7 @@ module Gearup
 
     Gearman::Util.logger = logger
     options = { :network_timeout_sec => 2, :reconnect_sec => 4 }
-    worker = Gearman::Worker.new('localhost:4730', options)
+    worker = Gearman::Worker.new(configuration[:servers], options)
     worker.add_ability('example.echo') do |data, job|
       payload = OpenStruct.new(:data => data)
 
@@ -56,7 +107,7 @@ module Gearup
 
     logger.debug "Daemonized"
 
-    worker.work
+    loop { worker.work }
   end
 
 end
