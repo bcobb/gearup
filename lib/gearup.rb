@@ -2,6 +2,7 @@ require 'ostruct'
 require 'logger'
 require 'gearman'
 
+require 'gearup/command_line_configuration'
 require 'gearup/builder'
 require 'gearup/worker'
 require 'gearup/logger'
@@ -24,7 +25,7 @@ module Gearup
   def self.start(worker)
     # XXX: option to run in foreground?
     daemonize
-    remember_to_stop
+    remember_to_stop(worker)
 
     loop { worker.work }
   end
@@ -63,7 +64,7 @@ module Gearup
     at_exit { ::File.delete(pid_file) if ::File.exist?(pid_file) }
   end
 
-  def self.remember_to_stop
+  def self.remember_to_stop(worker)
     trap(:INT) do
       logger.debug "Shutting down"
 
@@ -71,56 +72,6 @@ module Gearup
 
       exit
     end
-  end
-
-  class CommandLineConfiguration
-
-    def self.from(args)
-      configuration = new(args)
-      configuration.parse_options!
-      configuration.options
-    end
-
-    def initialize(args)
-      @args = args
-      @options = { }
-    end
-
-    def parse_options!
-      parser.parse!(@args)
-    end
-
-    def options
-      {
-        :logfile => ::File.expand_path('log/gearup.log'),
-        :servers => ['localhost:4730'],
-        :loglevel => ::Logger::INFO
-      }.merge(@options)
-    end
-
-    private
-
-    def parser
-      OptionParser.new do |parser|
-        parser.banner = "Usage: gearup [options] WORKER\n\n"
-
-        parser.on('-s', '--server SERVERS', Array, 'Specify servers on which the worker will run.') do |servers|
-          @options[:servers] = servers
-        end
-
-        parser.on('-v', '--verbose', 'Enable verbose (DEBUG-level) logging') do |verbose|
-          @options[:verbose] = true
-          @options[:loglevel] = ::Logger::DEBUG
-        end
-
-        parser.on('-l', '--logfile LOGFILE', "Specify Gearup's log location") do |logfile|
-          file = File.expand_path(logfile)
-          @options[:logfile] = file
-        end
-
-      end
-    end
-
   end
 
 end
