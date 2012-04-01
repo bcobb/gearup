@@ -1,7 +1,9 @@
 require 'ostruct'
+require 'logger'
 require 'gearman'
 
 require 'gearup/worker'
+require 'gearup/logger'
 
 module Gearup
 
@@ -47,9 +49,8 @@ module Gearup
   end
 
   def self.start_logging
-    @logger = Logger.new(configuration[:logfile])
-    @logger.level = configuration[:loglevel]
-    Gearman::Util.logger = @logger
+    @logger = Gearup::Logger.new
+    Gearman::Util.logger = @logger.basic_logger
   end
 
   def self.daemonize
@@ -75,7 +76,7 @@ module Gearup
 
   def self.remember_to_stop
     trap(:INT) do
-      logger.debug "Gearup: Shutting down"
+      logger.debug "Shutting down"
 
       worker.shutdown
 
@@ -104,7 +105,7 @@ module Gearup
       {
         :logfile => ::File.expand_path('log/gearup.log'),
         :servers => ['localhost:4730'],
-        :loglevel => Logger::INFO
+        :loglevel => ::Logger::INFO
       }.merge(@options)
     end
 
@@ -120,7 +121,7 @@ module Gearup
 
         parser.on('-v', '--verbose', 'Enable verbose (DEBUG-level) logging') do |verbose|
           @options[:verbose] = true
-          @options[:loglevel] = Logger::DEBUG
+          @options[:loglevel] = ::Logger::DEBUG
         end
 
         parser.on('-l', '--logfile LOGFILE', "Specify Gearup's log location") do |logfile|
