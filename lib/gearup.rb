@@ -1,6 +1,8 @@
 require 'ostruct'
 require 'gearman'
 
+require 'gearup/worker'
+
 module Gearup
 
   class << self
@@ -15,22 +17,16 @@ module Gearup
 
     ability = Example::Echo.new
 
-    worker.add_ability('example.echo') do |data, job|
+    worker.enable('example.echo') do |data, job|
       payload = OpenStruct.new(:data => data)
 
       ability.call(payload)
     end
 
-    worker.after_ability('example.echo') do |result, data|
-      payload = OpenStruct.new(:data => data)
-
-      logger.debug("Got #{result.inspect} from #{payload.inspect}")
-    end
-
-    start
+    start_worker
   end
 
-  def self.start
+  def self.start_worker
     # XXX: option to run in foreground?
     daemonize
     remember_to_stop
@@ -39,13 +35,15 @@ module Gearup
   end
 
   def self.worker
-    @worker ||= lambda do
-      options = { :network_timeout_sec => 2, :reconnect_sec => 4 }
+    @worker ||= Gearup::Worker.new(configuration[:servers])
+  end
 
-      worker = Gearman::Worker.new(configuration[:servers], options)
-      def worker.abilities ; @abilities.keys ; end # tsk
-      worker
-    end.call
+  def self.servers
+    configuration[:servers]
+  end
+
+  def self.configuration
+    @configuration || {}
   end
 
   def self.start_logging
@@ -70,7 +68,7 @@ module Gearup
     pid_file = ::File.expand_path('gearup.pid')
     ::File.open(pid_file, 'w'){ |f| f.write("#{::Process.pid}") }
 
-    logger.debug("Wrote out #{pid_file}")
+    logger.debug("Gearup: Wrote out #{pid_file}")
 
     at_exit { ::File.delete(pid_file) if ::File.exist?(pid_file) }
   end
@@ -79,9 +77,7 @@ module Gearup
     trap(:INT) do
       logger.debug "Gearup: Shutting down"
 
-      # XXX: Gearup::Worker#shutdown
-      worker.abilities.each { |ability| worker.remove_ability(ability) }
-      worker.worker_enabled = false
+      worker.shutdown
 
       exit
     end
