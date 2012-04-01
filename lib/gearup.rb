@@ -11,19 +11,19 @@ module Gearup
     attr_reader :logger, :configuration
   end
 
+  def self.enable(ability_name, ability)
+    gearup_ability = lambda do |data, job|
+      ability.call(data, job)
+    end
+
+    worker.enable(ability_name, &gearup_ability)
+  end
+
   def self.run_from_file(file, configuration)
     @configuration = configuration # XXX: smelly
     start_logging
 
-    eval ::File.read(file), TOPLEVEL_BINDING, file
-
-    ability = Example::Echo.new
-
-    worker.enable('example.echo') do |data, job|
-      payload = OpenStruct.new(:data => data)
-
-      ability.call(payload)
-    end
+    instance_eval ::File.read(file)
 
     start_worker
   end
