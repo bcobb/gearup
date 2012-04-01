@@ -2,6 +2,7 @@ require 'ostruct'
 require 'logger'
 require 'gearman'
 
+require 'gearup/builder'
 require 'gearup/worker'
 require 'gearup/logger'
 
@@ -11,33 +12,21 @@ module Gearup
     attr_reader :logger, :configuration
   end
 
-  def self.enable(ability_name, ability)
-    gearup_ability = lambda do |data, job|
-      ability.call(data, job)
-    end
-
-    worker.enable(ability_name, &gearup_ability)
-  end
-
   def self.run_from_file(file, configuration)
     @configuration = configuration # XXX: smelly
     start_logging
 
-    instance_eval ::File.read(file)
+    worker = Builder.build_from_file(file)
 
-    start_worker
+    start(worker)
   end
 
-  def self.start_worker
+  def self.start(worker)
     # XXX: option to run in foreground?
     daemonize
     remember_to_stop
 
     loop { worker.work }
-  end
-
-  def self.worker
-    @worker ||= Gearup::Worker.new(configuration[:servers])
   end
 
   def self.servers
