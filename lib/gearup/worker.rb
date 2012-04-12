@@ -17,8 +17,6 @@ module Gearup
     def enable(ability_name, ability)
       return if able_to_perform?(ability_name)
 
-      ability ||= Proc.new { }
-
       @abilities << ability_name
 
       @worker.add_ability(ability_name) do |data, job|
