@@ -3,9 +3,9 @@ module Gearup
 
     attr_reader :basic_logger
 
-    def initialize
-      @basic_logger = ::Logger.new(Gearup.configuration[:logfile])
-      @basic_logger.level = Gearup.configuration[:loglevel]
+    def initialize(file, level)
+      @basic_logger = ::Logger.new(file)
+      @basic_logger.level = level
     end
 
     %w(fatal error warn info debug).each do |logger_method|

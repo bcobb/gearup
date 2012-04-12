@@ -39,7 +39,14 @@ module Gearup
   end
 
   def self.start_logging
-    @logger = Gearup::Logger.new
+    @logger = begin
+      Gearup::Logger.new(configuration[:logfile], configuration[:loglevel])
+    rescue => e
+      warn "Couldn't open file #{configuration[:logfile]}. Logging to STDOUT."
+
+      Gearup::Logger.new(STDOUT, configuration[:loglevel])
+    end
+
     Gearman::Util.logger = @logger.basic_logger
   end
 
