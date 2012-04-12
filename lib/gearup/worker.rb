@@ -14,14 +14,17 @@ module Gearup
       @worker.work
     end
 
-    def enable(ability_name, &ability)
+    def enable(ability_name, ability)
       return if able_to_perform?(ability_name)
 
       ability ||= Proc.new { }
 
       @abilities << ability_name
 
-      @worker.add_ability(ability_name, &ability)
+      @worker.add_ability(ability_name) do |data, job|
+        ability.call(data, job)
+      end
+
       @worker.after_ability(ability_name, &debug_after_ability(ability_name))
     end
 

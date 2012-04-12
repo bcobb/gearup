@@ -13,28 +13,28 @@ describe Gearup::Worker do
   end
 
   it 'enables abilities on the gearman worker' do
-    ability = 'test'
-    gearman_worker.should_receive(:add_ability).with(ability)
+    ability_name = 'test'
+    gearman_worker.should_receive(:add_ability).with(ability_name)
 
-    subject.enable(ability)
+    subject.enable(ability_name, stub)
     subject.should be_able_to_perform('test')
   end
 
   it 'can disable abilities on the gearman worker' do
-    ability = 'test'
+    ability_name = 'test'
 
-    gearman_worker.should_receive(:remove_ability).with(ability)
-    subject.enable(ability)
-    subject.disable(ability)
+    gearman_worker.should_receive(:remove_ability).with(ability_name)
+    subject.enable(ability_name, stub)
+    subject.disable(ability_name)
 
-    subject.should_not be_able_to_perform(ability)
+    subject.should_not be_able_to_perform(ability_name)
   end
 
   it 'disables all abilities and the worker on shutdown' do
     subject.should_receive(:disable).with('test')
     gearman_worker.should_receive(:worker_enabled=).with(false)
 
-    subject.enable('test')
+    subject.enable('test', stub)
     subject.shutdown
   end
 
