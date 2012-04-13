@@ -32,3 +32,35 @@ Feature: Workers are supported by middleware
       """
     When I run the test.echo task with "--- :hello"
     Then the task should complete with "hello"
+
+  Scenario: Run a worker that uses middleware which have dependencies
+    Given the following worker is running:
+      """
+      module Test
+        class FromSerializedFormat
+
+          def initialize(ability, serializer)
+            @ability = ability
+            @serializer = serializer
+          end
+
+          def call(data, job)
+            @ability.call(@serializer.load(data), job)
+          end
+
+        end
+
+        class Echo
+
+          def call(data, job)
+            return data
+          end
+
+        end
+      end
+
+      use Test::FromSerializedFormat, YAML
+      enable 'test.echo', Test::Echo.new
+      """
+    When I run the test.echo task with "--- :hello"
+    Then the task should complete with "hello"

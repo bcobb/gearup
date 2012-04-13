@@ -21,4 +21,10 @@ describe Gearup::Builder do
     subject.should be_using_middleware(middleware)
   end
 
+  it 'can add middleware to the stack, along with dependencies' do
+    middleware, dependency = stub, stub
+
+    subject.use(middleware, dependency)
+  end
+
 end
