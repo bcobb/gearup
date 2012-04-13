@@ -4,7 +4,7 @@ require 'ostruct'
 module Gearup
   module RunsTasksApi
 
-    NothingCaptured = Class.new
+    class NothingCaptured ; end
 
     class CurrentTask < OpenStruct
 

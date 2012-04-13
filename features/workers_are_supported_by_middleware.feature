@@ -3,7 +3,7 @@ Feature: Workers are supported by middleware
   Gearup's DSL implements `use` to specify middleware used by a worker.
 
   Scenario: Run a worker that uses a basic middleware
-    Given a file named "worker.rb" with:
+    Given the following worker is running:
       """
       module Test
         class FromYaml
@@ -30,6 +30,5 @@ Feature: Workers are supported by middleware
       use Test::FromYaml
       enable 'test.echo', Test::Echo.new
       """
-    When I successfully run `gearup -l ../../log/test.log -v worker.rb`
-    And I run the test.echo task with "--- :hello"
+    When I run the test.echo task with "--- :hello"
     Then the task should complete with "hello"

@@ -5,3 +5,10 @@ end
 Then /^the task should complete with "([^"]*)"$/ do |data|
   captured_on_complete.should == data
 end
+
+Given /^the following worker is running:$/ do |worker_file_contents|
+  file = 'worker.rb'
+
+  step(%{a file named "#{file}" with:}, worker_file_contents)
+  step("I successfully run `gearup -l ../../log/test.log -v #{file}`")
+end
