@@ -25,6 +25,7 @@ describe Gearup::Builder do
     middleware, dependency = stub, stub
 
     subject.use(middleware, dependency)
+    subject.should be_using_middleware(middleware)
   end
 
 end
