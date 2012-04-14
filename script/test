@@ -1,9 +1,9 @@
 #!/bin/bash
 
 if [ $# -ne 0 ]; then
-  command="rspec -f doc $1"
+  command="rspec -cf doc $1"
 
   $command
 else
-  rspec spec
+  rspec -cf progress spec
 fi

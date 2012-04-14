@@ -40,11 +40,11 @@ module Gearup
 
   def self.start_logging
     @logger = begin
-      Gearup::Logger.new(configuration[:logfile], configuration[:loglevel])
+      Logger.new(configuration[:logfile], configuration[:loglevel])
     rescue => e
       warn "Couldn't open file #{configuration[:logfile]}. Logging to STDOUT."
 
-      Gearup::Logger.new(STDOUT, configuration[:loglevel])
+      Logger.new(STDOUT, configuration[:loglevel])
     end
 
     Gearman::Util.logger = @logger.basic_logger
@@ -66,7 +66,7 @@ module Gearup
     pid_file = ::File.expand_path('gearup.pid')
     ::File.open(pid_file, 'w'){ |f| f.write("#{::Process.pid}") }
 
-    logger.debug("Gearup: Wrote out #{pid_file}")
+    logger.debug("Wrote out #{pid_file}")
 
     at_exit { ::File.delete(pid_file) if ::File.exist?(pid_file) }
   end

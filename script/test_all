@@ -4,12 +4,12 @@ set -e
 
 echo "Running Suite"
 
-rspec spec
+rspec -cf progress spec
 
 echo "Running individual specs"
 
 for file in `find spec -iname '*_spec.rb'`; do
-  rspec $file
+  rspec -cf progress $file
 done
 
 ./script/features

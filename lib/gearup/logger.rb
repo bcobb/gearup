@@ -21,7 +21,7 @@ module Gearup
     private
 
     def preface(message)
-      "Gearup: #{message}"
+      "Gearup [#{::Process.pid}]: #{message}"
     end
 
   end
