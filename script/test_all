@@ -11,3 +11,5 @@ echo "Running individual specs"
 for file in `find spec -iname '*_spec.rb'`; do
   rspec $file
 done
+
+./script/features
