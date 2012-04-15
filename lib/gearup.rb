@@ -21,14 +21,20 @@ module Gearup
 
     worker = Builder.build_from_file(file)
 
+    puts "=> Abilities:"
+    puts "   - #{worker.abilities.join("   -\n")}"
+
     start(worker)
   end
 
   def self.start(worker)
-    puts "=> Call with -D to run in the background"
-    puts "=> Ctrl-C will stop the worker"
+    if configuration[:daemonize]
+      daemonize
+    else
+      puts "=> Call with -D to run in the background"
+      puts "=> Ctrl-C will stop the worker"
+    end
 
-    daemonize if configuration[:daemonize]
     write_pid(configuration[:pid]) if configuration[:pid]
     remember_to_stop(worker)
 

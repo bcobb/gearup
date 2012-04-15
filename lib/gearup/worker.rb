@@ -1,6 +1,8 @@
 module Gearup
   class Worker
 
+    attr_reader :abilities
+
     def initialize(servers = Gearup.servers)
       # XXX: abstract this into a few objective-based settings
       # e.g. lazy-in-between-jobs, checks-frequently, etc.
