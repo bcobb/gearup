@@ -17,7 +17,7 @@ module Gearup
     end
 
     def enable(ability_name, ability_to_perform)
-      worker.enable(ability_name, gearup_ability_for(ability_to_perform))
+      @worker.enable(ability_name, gearup_ability_for(ability_to_perform))
     end
 
     def use(middleware, *dependencies)

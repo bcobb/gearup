@@ -21,7 +21,7 @@ module Gearup
     worker = Builder.build_from_file(file)
 
     puts "=> Abilities:"
-    puts "   - #{worker.abilities.join("   -\n")}"
+    puts "   - #{worker.abilities.join("\n   - ")}"
 
     start(worker)
   end
