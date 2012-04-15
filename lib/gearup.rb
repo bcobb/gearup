@@ -23,8 +23,7 @@ module Gearup
   end
 
   def self.start(worker)
-    # XXX: option to run in foreground?
-    daemonize
+    daemonize if configuration[:daemonize]
     write_pid(configuration[:pid]) if configuration[:pid]
     remember_to_stop(worker)
 

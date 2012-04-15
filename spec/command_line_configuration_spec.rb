@@ -73,4 +73,16 @@ describe Gearup::CommandLineConfiguration do
 
   end
 
+  describe '-D' do
+
+    it 'specifies that the worker should be daemonized' do
+      options_from(%w(-D)).should include(:daemonize => true)
+    end
+
+    it 'is false by default' do
+      default_options.should include(:daemonize => false)
+    end
+
+  end
+
 end

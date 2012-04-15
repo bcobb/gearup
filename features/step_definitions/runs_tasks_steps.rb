@@ -8,7 +8,8 @@ end
 
 Given /^the following worker is running:$/ do |worker_file_contents|
   file = 'worker.rb'
+  command = "gearup -P gearup.pid -D -l ../../log/test.log -v #{file}"
 
   step(%{a file named "#{file}" with:}, worker_file_contents)
-  step("I successfully run `gearup -P gearup.pid -l ../../log/test.log -v #{file}`")
+  step("I successfully run `#{command}`")
 end

@@ -20,7 +20,8 @@ module Gearup
       {
         :logfile => ::File.expand_path('log/gearup.log'),
         :servers => ['localhost:4730'],
-        :loglevel => ::Logger::INFO
+        :loglevel => ::Logger::INFO,
+        :daemonize => false
       }.merge(@options)
     end
 
@@ -47,6 +48,10 @@ module Gearup
         parser.on('-P', '--pid FILE', "Specify a file to store gearup's PID") do |pid|
           file = ::File.expand_path(pid)
           @options[:pid] = file
+        end
+
+        parser.on('-D', "Specify that the worker should be daemonized") do |daemonize|
+          @options[:daemonize] = true
         end
 
       end
