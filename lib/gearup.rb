@@ -25,6 +25,7 @@ module Gearup
   def self.start(worker)
     # XXX: option to run in foreground?
     daemonize
+    write_pid(configuration[:pid]) if configuration[:pid]
     remember_to_stop(worker)
 
     loop { worker.work }
@@ -42,7 +43,9 @@ module Gearup
     @logger = begin
       Logger.new(configuration[:logfile], configuration[:loglevel])
     rescue => e
-      warn "Couldn't open file #{configuration[:logfile]}. Logging to STDOUT."
+      if configuration[:verbose]
+        warn "Couldn't open file #{configuration[:logfile]}. Logging to STDOUT."
+      end
 
       Logger.new(STDOUT, configuration[:loglevel])
     end
@@ -61,9 +64,9 @@ module Gearup
     else
       ::Process.daemon
     end
+  end
 
-    # XXX: configuration[:pid]
-    pid_file = ::File.expand_path('gearup.pid')
+  def self.write_pid(pid_file)
     ::File.open(pid_file, 'w'){ |f| f.write("#{::Process.pid}") }
 
     logger.debug("Wrote out #{pid_file}")

@@ -40,8 +40,13 @@ module Gearup
         end
 
         parser.on('-l', '--logfile LOGFILE', "Specify Gearup's log location") do |logfile|
-          file = File.expand_path(logfile)
+          file = ::File.expand_path(logfile)
           @options[:logfile] = file
+        end
+
+        parser.on('-P', '--pid FILE', "Specify a file to store gearup's PID") do |pid|
+          file = ::File.expand_path(pid)
+          @options[:pid] = file
         end
 
       end

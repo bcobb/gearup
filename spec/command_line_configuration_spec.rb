@@ -6,6 +6,14 @@ describe Gearup::CommandLineConfiguration do
     Gearup::CommandLineConfiguration.from(argv)
   end
 
+  def default_options
+    options_from([])
+  end
+
+  def file(file_name)
+    ::File.expand_path(file_name)
+  end
+
   describe '-s, --server' do
 
     it 'accepts one server' do
@@ -19,7 +27,7 @@ describe Gearup::CommandLineConfiguration do
     end
 
     it 'defaults to localhost:4730' do
-      options_from([]).should include(:servers => ['localhost:4730'])
+      default_options.should include(:servers => ['localhost:4730'])
     end
 
   end
@@ -35,21 +43,32 @@ describe Gearup::CommandLineConfiguration do
 
   describe '-l, --logfile' do
 
-    before { File.stub(:expand_path) }
-
     it 'specifies to where Gearup should log' do
-      file = stub
+      log = file('log/loggy.log')
 
-      File.should_receive(:expand_path).with('log/loggy.log').twice { file }
-      options_from(%w(-l log/loggy.log)).should include(:logfile => file)
-      options_from(%w(--logfile log/loggy.log)).should include(:logfile => file)
+      options_from(%w(-l log/loggy.log)).should include(:logfile => log)
+      options_from(%w(--logfile log/loggy.log)).should include(:logfile => log)
     end
 
     it 'defaults to log/gearup.log' do
-      file = stub
+      logfile = file('log/gearup.log')
 
-      File.should_receive(:expand_path).with('log/gearup.log') { file }
-      options_from(%w()).should include(:logfile => file)
+      default_options.should include(:logfile => logfile)
+    end
+
+  end
+
+  describe '-P, --pid' do
+
+    it 'specifies the name of the PID file gearup writes to' do
+      pid = file('process.pid')
+
+      options_from(%w(-P process.pid)).should include(:pid => pid)
+      options_from(%w(--pid process.pid)).should include(:pid => pid)
+    end
+
+    it 'does not have a default' do
+      default_options.should_not include :pid
     end
 
   end
