@@ -13,10 +13,9 @@ module Gearup
     attr_reader :logger, :configuration
   end
 
-  def self.run_from_file(file, configuration)
+  def self.run_from_file(file)
     puts "=> Starting worker from #{file}"
 
-    @configuration = configuration # XXX: smelly
     start_logging
 
     worker = Builder.build_from_file(file)
@@ -43,6 +42,14 @@ module Gearup
 
   def self.servers
     configuration[:servers]
+  end
+
+  def self.configure(configuration = {})
+    if block_given?
+      yield @configuration
+    else
+      @configuration = configuration
+    end
   end
 
   def self.configuration

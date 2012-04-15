@@ -7,4 +7,5 @@ args = ARGV.dup
 worker = ::File.expand_path(args.pop)
 configuration = Gearup::CommandLineConfiguration.from(args)
 
-Gearup.run_from_file(worker, configuration)
+Gearup.configure(configuration)
+Gearup.run_from_file(worker)
