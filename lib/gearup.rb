@@ -14,6 +14,8 @@ module Gearup
   end
 
   def self.run_from_file(file, configuration)
+    puts "=> Starting worker from #{file}"
+
     @configuration = configuration # XXX: smelly
     start_logging
 
@@ -23,6 +25,9 @@ module Gearup
   end
 
   def self.start(worker)
+    puts "=> Call with -D to run in the background"
+    puts "=> Ctrl-C will stop the worker"
+
     daemonize if configuration[:daemonize]
     write_pid(configuration[:pid]) if configuration[:pid]
     remember_to_stop(worker)
@@ -75,6 +80,7 @@ module Gearup
 
   def self.remember_to_stop(worker)
     trap(:INT) do
+      puts "=> Gearing down"
       logger.debug "Shutting down"
 
       worker.shutdown
