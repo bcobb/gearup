@@ -23,10 +23,6 @@ module Gearup
     puts "=> Abilities:"
     puts "   - #{worker.abilities.join("\n   - ")}"
 
-    start(worker)
-  end
-
-  def self.start(worker)
     if configuration[:daemonize]
       daemonize
     else
