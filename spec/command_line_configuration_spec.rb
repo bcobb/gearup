@@ -50,10 +50,8 @@ describe Gearup::CommandLineConfiguration do
       options_from(%w(--logfile log/loggy.log)).should include(:logfile => log)
     end
 
-    it 'defaults to log/gearup.log' do
-      logfile = file('log/gearup.log')
-
-      default_options.should include(:logfile => logfile)
+    it 'defaults to STDOUT' do
+      default_options.should include(:logfile => STDOUT)
     end
 
   end

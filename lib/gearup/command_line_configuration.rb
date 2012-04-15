@@ -18,7 +18,7 @@ module Gearup
 
     def options
       {
-        :logfile => ::File.expand_path('log/gearup.log'),
+        :logfile => STDOUT,
         :servers => ['localhost:4730'],
         :loglevel => ::Logger::INFO,
         :daemonize => false
