@@ -2,8 +2,7 @@ module Gearup
   class Builder
 
     def self.build_from_file(file)
-      worker = Worker.new(Gearup.configuration[:servers])
-      builder = new(worker)
+      builder = new
 
       builder.instance_eval(::File.read(file))
       builder.worker
@@ -11,7 +10,7 @@ module Gearup
 
     attr_reader :worker
 
-    def initialize(worker_to_be_built)
+    def initialize(worker_to_be_built = Worker.new)
       @worker = worker_to_be_built
       @middleware = []
       @dependencies = []

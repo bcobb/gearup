@@ -49,12 +49,8 @@ module Gearup
 
     def debug_after_ability(ability)
       lambda do |result, data|
-        logger.debug "After #{ability}(#{data}), got #{result}"
+        Gearup.logger.debug "After #{ability}(#{data}), got #{result}"
       end
-    end
-
-    def logger
-      Gearup.logger
     end
 
   end
