@@ -8,8 +8,8 @@ Feature: Run a worker
       module Test
         class Echo
 
-          def call(data, job)
-            return data
+          def call(payload)
+            payload[:data]
           end
 
         end

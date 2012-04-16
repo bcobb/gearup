@@ -23,7 +23,7 @@ module Gearup
   class Echo
 
     def call(payload)
-      return payload.data
+      return payload[:data]
     end
 
   end
@@ -34,23 +34,23 @@ An application using the worker specified above could send jobs to it using the 
 
 ## Middleware
 
-Gearup workers are supported by middleware, which have access to the current ability, as well as the `payload` given to the ability, which includes the `data` given by the server. [gearman-ruby] provides an API through which workers can send data back to the Gearman server, but I haven't decided if Gearup will expose this API yet, as it hasn't proven terribly useful in production.
+Gearup workers are supported by middleware, which have access to the current ability, as well as the `payload` given to the ability, which includes the `data` given by the server. [gearman-ruby] provides an API through which workers can send data back to the Gearman server, but I haven't decided if Gearup will do anything more than provide it as the value of `payload[:job]`, as it hasn't proven terribly useful in production.
 
-For instance, the `Gearup::UnpackJSON` middleware uses the [json] gem to convert `payload.data` from JSON before it's passed to the worker, and looks roughly like so:
+For instance, the `Gearup::JSON` middleware uses the [json] gem to convert `payload[:data]` from JSON before it's passed to the worker, and looks roughly like so:
 
 ```ruby
 require 'json'
 
 module Gearup
   module Middleware
-    class UnpackJSON
+    class JSON
 
       def initialize(ability)
         @ability = ability
       end
 
       def call(payload)
-        payload.data = ::JSON.parse(payload.data)
+        payload[:data] = ::JSON.parse(payload[:data])
 
         @ability.call(payload)
       end
@@ -73,7 +73,7 @@ module Gearup
       end
 
       def call(payload)
-        @logger.debug "Received: #{payload.data} from server."
+        @logger.debug "Received: #{payload[:data]} from server."
 
         result = @ability.call(payload)
 
@@ -92,6 +92,11 @@ use Gearup::Middleware::Logging, Logger.new('./log/worker.log')
 
 # rest of worker specification
 ```
+
+# TODO
+
+* Provide a base set of useful middleware.
+* Client middleware?
 
 # Miscellany
 
