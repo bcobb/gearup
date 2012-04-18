@@ -12,26 +12,26 @@ Feature: Workers have multiple abilities
             @ability = ability
           end
 
-          def call(payload)
-            payload[:data] = YAML.load(payload[:data])
+          def call(env)
+            env[:data] = YAML.load(env[:data])
 
-            @ability.call(payload)
+            @ability.call(env)
           end
 
         end
 
         class Echo
 
-          def call(payload)
-            payload[:data]
+          def call(env)
+            env[:data]
           end
 
         end
 
         class Reverse
 
-          def call(payload)
-            payload[:data].to_s.reverse
+          def call(env)
+            env[:data].to_s.reverse
           end
 
         end

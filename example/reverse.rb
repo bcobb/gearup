@@ -1,8 +1,8 @@
 module Example
   class Reverse
 
-    def call(payload)
-      payload.data.reverse
+    def call(env)
+      env[:data].reverse
     end
 
   end

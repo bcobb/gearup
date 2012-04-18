@@ -12,18 +12,18 @@ Feature: Workers are supported by middleware
             @ability = ability
           end
 
-          def call(payload)
-            payload[:data] = YAML.load(payload[:data])
+          def call(env)
+            env[:data] = YAML.load(env[:data])
 
-            @ability.call(payload)
+            @ability.call(env)
           end
 
         end
 
         class Echo
 
-          def call(payload)
-            payload[:data]
+          def call(env)
+            env[:data]
           end
 
         end
@@ -46,18 +46,18 @@ Feature: Workers are supported by middleware
             @serializer = serializer
           end
 
-          def call(payload)
-            payload[:data] = @serializer.load(payload[:data])
+          def call(env)
+            env[:data] = @serializer.load(env[:data])
 
-            @ability.call(payload)
+            @ability.call(env)
           end
 
         end
 
         class Echo
 
-          def call(payload)
-            payload[:data]
+          def call(env)
+            env[:data]
           end
 
         end

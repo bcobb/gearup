@@ -22,8 +22,8 @@ module Gearup
       @abilities << ability_name
 
       @worker.add_ability(ability_name) do |data, job|
-        payload = {:data => data}
-        ability.call(payload)
+        env = {:data => data}
+        ability.call(env)
       end
 
       @worker.after_ability(ability_name, &debug_after_ability(ability_name))
