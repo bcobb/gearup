@@ -13,6 +13,7 @@ module Gearup
     end
 
     def parse_options!
+      @options[:worker] = @args.last
       parser.parse!(@args)
     end
 
@@ -21,7 +22,8 @@ module Gearup
         :logfile => STDOUT,
         :servers => ['localhost:4730'],
         :loglevel => ::Logger::INFO,
-        :daemonize => false
+        :daemonize => false,
+        :worker => 'worker.rb'
       }.merge(@options)
     end
 
@@ -31,7 +33,7 @@ module Gearup
       OptionParser.new do |parser|
         parser.banner = "Usage: gearup [options] WORKER\n\n"
 
-        parser.on('-s', '--server SERVERS', Array, 'Specify servers on which the worker will run.') do |servers|
+        parser.on('-s', '--server SERVERS', Array, 'Specify servers on which the worker will run. e.g. --server localhost:4730,localhost:4731') do |servers|
           @options[:servers] = servers
         end
 
@@ -54,6 +56,11 @@ module Gearup
           @options[:daemonize] = true
         end
 
+        parser.on_tail('-h', '--help', 'Show this message') do
+          puts parser
+
+          exit
+        end
       end
     end
 

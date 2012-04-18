@@ -5,14 +5,19 @@
 Gearup provides a Rack-like interface for Gearman workers. Like Rack, it provides a binary, `gearup` to run workers, which are conventionally specified in a file named `worker.rb`. A simple `worker.rb` might look like this:
 
 ```ruby
+# worker.rb
+
 require 'gearup/echo'
 
 # Load the data given to each job from JSON, and return it as a JSON string
 use Gearup::Hypothetical::JSON
 
-# The worker has the Echo ability
-enable Gearup::Echo.new
+# The worker has the 'echo' ability and the 'reverse' ability
+enable 'echo', Gearup::Echo.new
+enable 'reverse', Gearup::Reverse.new
 ```
+
+You can run it on `localhost:4730` like so: `gearup worker.rb`. See `gearup --help` for the command line options.
 
 ## Abilities
 
