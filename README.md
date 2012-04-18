@@ -7,8 +7,8 @@ Gearup provides a Rack-like interface for Gearman workers. Like Rack, it provide
 ```ruby
 require 'gearup/echo'
 
-# Unpack the data given to each job from JSON
-use Gearup::Middleware::UnpackJSON
+# Load the data given to each job from JSON, and return it as a JSON string
+use Gearup::Hypothetical::JSON
 
 # The worker has the Echo ability
 enable Gearup::Echo.new
@@ -36,13 +36,15 @@ An application using the worker specified above could send jobs to it using the 
 
 Gearup workers are supported by middleware, which have access to the current ability, as well as the `env` given to the ability, which includes the `data` given by the server. [gearman-ruby] provides an API through which workers can send data back to the Gearman server, but I haven't decided if Gearup will do anything more than provide it as the value of `env[:job]`, as it hasn't proven terribly useful in production.
 
-For instance, the hypothetical `Gearup::JSON` middleware uses the [json] gem to convert `env[:data]` from JSON before it's passed to the worker, and would look roughly like so:
+Any sane middleware should call `@ability.call(env)` at some point. Unlike Rack, there are not (yet) any expectations as to the return values of middleware and abilities. The return value from performing the ability will be passed back to the server as a string.
+
+For instance, the hypothetical `Gearup::JSON` middleware uses the [json] gem to convert `env[:data]` from JSON before it's passed to the worker, and to dump the result as JSON after the worker has performed the ability. It would look roughly like so:
 
 ```ruby
 require 'json'
 
 module Gearup
-  module Middleware
+  module Hypothetical
     class JSON
 
       def initialize(ability)
@@ -50,9 +52,9 @@ module Gearup
       end
 
       def call(env)
-        env[:data] = ::JSON.parse(env[:data])
+        env[:data] = ::JSON.load(env[:data])
 
-        @ability.call(env)
+        ::JSON.dump(@ability.call(env))
       end
 
     end
@@ -64,7 +66,7 @@ Note that when adding Middleware to a worker, you may supply arguments to the mi
 
 ```ruby
 module Gearup
-  module Middleware
+  module Hypothetical
     class Logging
 
       def initialize(ability, logger)
@@ -87,22 +89,25 @@ module Gearup
 end
 ```
 
-You would use `Gearup::Middleware::Logging` like so:
+You would use `Gearup::Hypothetical::Logging` like so:
 
 ```ruby
-use Gearup::Middleware::Logging, Logger.new('./log/worker.log')
+use Gearup::Hypothetical::Logging, Logger.new('./log/worker.log')
 
 # rest of worker specification
 ```
 
 # TODO
 
+* Address the occasional bug where gearup tries to shutdown, but GearmanRuby does this: `Server localhost:4730 timed out or lost connection (#<SystemExit: exit>); marking bad`
+* Provide a better way than adding keys to the `env` hash to pass data and middleware-provided methods down the stack 
+* Remove -D and -l in favor of letting other tools ([god], [Supervisor], e.g.) handle daemonization and redirecting STDOUT to a log file or service. The only thing blocking this are the cucumber tests, which need to run a daemonized worker and stop it. I have not been able to get [god] to do this.
 * Provide a base set of useful middleware.
 * Client middleware?
 
 # Miscellany
 
-The terminology is in constant flux. Please point out confusing explanations and usage.
+The terminology has been in constant flux. Please point out confusing explanations and usage.
 
 [gearman-ruby]: http://rubgems.org/gems/gearman-ruby
 [json]: http://rubygems.org/gems/json

@@ -68,3 +68,81 @@ Feature: Workers are supported by middleware
       """
     When I run the test.echo task with "--- :hello"
     Then the task should complete with "hello"
+
+  Scenario: Run a worker that uses multiple middleware
+    Given the following worker is running:
+      """
+      module Test
+        class FromSerializedFormat
+
+          def initialize(ability, serializer)
+            @ability = ability
+            @serializer = serializer
+          end
+
+          def call(env)
+            env[:data] = @serializer.load(env[:data])
+
+            @ability.call(env)
+          end
+
+        end
+
+        class Parenthetical
+
+          def initialize(ability)
+            @ability = ability
+          end
+
+          def call(env)
+            "(#{@ability.call(env)})"
+          end
+        end
+
+        class Echo
+
+          def call(env)
+            env[:data]
+          end
+
+        end
+      end
+
+      use Test::FromSerializedFormat, YAML
+      use Test::Parenthetical
+      enable 'test.echo', Test::Echo.new
+      """
+    When I run the test.echo task with "--- :hello"
+    Then the task should complete with "(hello)"
+
+  Scenario: Run a bad middleware citizen
+    Given the following worker is running:
+      """
+      module Test
+        class Sadness
+
+          def initialize(ability)
+            @ability = ability
+          end
+
+          def call(env)
+            @ability.call(env)
+
+            ":'("
+          end
+        end
+
+        class Echo
+
+          def call(env)
+            env[:data]
+          end
+
+        end
+      end
+
+      use Test::Sadness
+      enable 'test.echo', Test::Echo.new
+      """
+    When I run the test.echo task with "anything"
+    Then the task should complete with ":'("
