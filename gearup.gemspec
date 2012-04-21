@@ -7,10 +7,10 @@ Gem::Specification.new do |s|
   s.name            = "gearup"
   s.version         = Gearup::VERSION
   s.platform        = Gem::Platform::RUBY
-  s.summary         = "a Rack-like interface for Gearman workers"
+  s.summary         = "Gearman workers built with middleware support"
 
   s.description     = <<-DESC
-Gearup provides a Rack-like interface for Gearman workers. Its aim is to
+Gearup builds Gearman workers around a Middleware stack. Its aim is to
 simplify the task of constructing focused, yet robust, workers, and to provide a
 familiar and configurable binary to run them.
 DESC
@@ -24,7 +24,7 @@ DESC
 
   s.author          = 'Brian Cobb'
   s.email           = 'b@bcobb.net'
-  s.homepage        = 'http://bcobb.github.com/gearup'
+  s.homepage        = 'https://github.com/bcobb/gearup'
 
   s.add_development_dependency 'rspec'
   s.add_dependency 'gearman-ruby'
