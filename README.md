@@ -2,7 +2,7 @@
 
 ## What is Gearup?
 
-Gearup provides a Rack-like interface for Gearman workers. Like Rack, it provides a binary, `gearup` to run workers, which are conventionally specified in a file named `worker.rb`. A simple `worker.rb` might look like this:
+Gearup builds [Gearman] workers around a Middleware stack. It provides a binary, `gearup` to run workers, which are conventionally specified in a file named `worker.rb`. A simple `worker.rb` might look like this:
 
 ```ruby
 # worker.rb
@@ -18,6 +18,10 @@ enable 'reverse', Gearup::Reverse.new
 ```
 
 You can run it on `localhost:4730` like so: `gearup worker.rb`. See `gearup --help` for the command line options.
+
+## Why Middleware?
+
+Structuring a worker as a set of abilities, each supported by a chain of middleware separates the concerns of the actual work to be performed from its dependencies and auxiliary services. The process of building a worker provides natural places to configure each, so that each middleware can be written in a reusable way.
 
 ## Abilities
 
@@ -114,6 +118,7 @@ use Gearup::Hypothetical::Logging, Logger.new('./log/worker.log')
 
 The terminology has been in constant flux. Please point out confusing explanations and usage.
 
+[Gearman]: http://gearman.org
 [gearman-ruby]: http://rubgems.org/gems/gearman-ruby
 [json]: http://rubygems.org/gems/json
 [Supervisor]: http://supervisord.org/
