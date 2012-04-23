@@ -108,9 +108,6 @@ use Gearup::Hypothetical::Logging, Logger.new('./log/worker.log')
 
 # TODO
 
-* Address the occasional bug where gearup tries to shutdown, but GearmanRuby does this: `Server localhost:4730 timed out or lost connection (#<SystemExit: exit>); marking bad`
-* Provide a better way than adding keys to the `env` hash to pass data and middleware-provided methods down the stack 
-* Remove -D and -l in favor of letting other tools ([god], [Supervisor], e.g.) handle daemonization and redirecting STDOUT to a log file or service. The only thing blocking this are the cucumber tests, which need to run a daemonized worker and stop it. I have not been able to get [god] to do this.
 * Provide a base set of useful middleware.
 * Client middleware?
 
